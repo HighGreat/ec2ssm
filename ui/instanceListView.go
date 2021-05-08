@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -91,7 +92,9 @@ func selected(ui *Ui, instances *[]*ec2.Instance) func(row, coln int) {
 
 				if label == "Yes" {
 					ui.app.Suspend(func() {
-						command := fmt.Sprintf("aws ssm start-session --target %s", instanceId)
+						signal.Ignore()
+
+						command := fmt.Sprintf("aws ssm start-session --region ap-northeast-1 --target %s", instanceId)
 						cmd := exec.Command("bash", "-c", command)
 						cmd.Stdin = os.Stdin
 						cmd.Stdout = os.Stdout
